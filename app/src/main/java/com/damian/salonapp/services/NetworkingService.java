@@ -30,6 +30,7 @@ public class NetworkingService extends IntentService {
         System.out.println("doing somethign");
 
         this.dataSocket=new DataSocket();
+        this.dataSocket.waitAndProcess();
         System.out.println("will be doing some stuff...hopefully");
 
     }
