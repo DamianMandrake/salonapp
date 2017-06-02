@@ -1,6 +1,7 @@
 package com.damian.salonapp.services.networking;
 
 import android.telephony.SmsManager;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,8 @@ public class ClientHandler extends Thread{
         try {
             PrintWriter pw = new PrintWriter(this.socket.getOutputStream());
             String msg=this.sendSms(this.getDataFromSource());
-            pw.write(msg);
+            pw.println(msg);
+            Log.d("ClientHandler","reply sent is "+msg);
             pw.close();
             this.socket.close();
         }catch (IOException ioe){
@@ -40,12 +42,13 @@ public class ClientHandler extends Thread{
 
     private JSONObject getDataFromSource(){
         try{
+
             BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             StringBuilder stringBuilder=new StringBuilder();
             String temp;
             while((temp=bufferedReader.readLine())!=null)
                 stringBuilder.append(temp);
-
+            Log.d("ClientHandler","received data "+stringBuilder.toString());
             bufferedReader.close();
             return new JSONObject(stringBuilder.toString());
         }catch (IOException ioe){
@@ -59,6 +62,7 @@ public class ClientHandler extends Thread{
     private String sendSms(JSONObject jsonObject){
         try {
             SmsManager smsManager = SmsManager.getDefault();
+            Log.d("ClientHandler","Sending message");
             smsManager.sendTextMessage(jsonObject.get("phone").toString(), null, jsonObject.get("message").toString(), null, null);
             return "sent";
         }catch (JSONException jse){
