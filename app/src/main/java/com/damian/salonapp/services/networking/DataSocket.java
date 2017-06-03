@@ -1,6 +1,7 @@
 package com.damian.salonapp.services.networking;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.util.Log;
 
 import com.damian.salonapp.MainActivity;
@@ -24,7 +25,6 @@ public class DataSocket  {
     private ServerSocket mServerSocket;
     private static int mDefaultPort=4444;
     private static int mDefaultQueSize=10;
-
     public static SetSomeText ref=null;
     public DataSocket(){
         try {

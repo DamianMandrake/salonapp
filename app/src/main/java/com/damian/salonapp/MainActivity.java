@@ -9,16 +9,24 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.damian.salonapp.services.networking.AddToList;
+import com.damian.salonapp.services.networking.ClientHandler;
 import com.damian.salonapp.services.networking.SetSomeText;
 import com.damian.salonapp.services.NetworkingService;
+import com.damian.salonapp.services.sentto.SentTo;
 
-public class MainActivity extends AppCompatActivity implements SetSomeText {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements SetSomeText,AddToList {
 
     private TextView ipText;
     private final static int MSUCCESS=4;
     public static String TEXT_VIEW_TXT="Type this ip address into your pc client";
+
+    private ArrayList<SentTo> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +34,11 @@ public class MainActivity extends AppCompatActivity implements SetSomeText {
         setContentView(R.layout.activity_main);
         System.out.println("creating and sending intent");
 
+
+        this.arrayList=new ArrayList<>();
         ipText=(TextView) findViewById(R.id.ip_text_view);
         com.damian.salonapp.services.networking.DataSocket.ref=this;
+        ClientHandler.addToList=this;
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)!= PackageManager.PERMISSION_DENIED){
             //starting the service
             this.launchService();
@@ -42,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements SetSomeText {
     private void launchService(){
         Intent intent=new Intent(this, NetworkingService.class);
         intent.setData(Uri.parse("random"));//dont need this
+        intent.setAction("random");
         this.startService(intent);
 
 
@@ -63,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements SetSomeText {
         });
     }
 
+    /* Overriding AddToList's methods*/
+    @Override
+    public void addToList(SentTo sentTo){
+        arrayList.add(sentTo);
+    }
 
 
     /* Overrding onRequestPermissionsResult- callback to the dialog box given to the user once he reacts to it*/

@@ -5,6 +5,7 @@
     
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -22,6 +23,9 @@
         </activity>
         <service android:name=".services.NetworkingService"
             android:exported="false"/>
+        <receiver android:name=".services.MyBroadcastReceiver">
+
+        </receiver>
     </application>
 
 </manifest>

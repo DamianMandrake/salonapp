@@ -1,7 +1,11 @@
 package com.damian.salonapp.services.networking;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
+
+import com.damian.salonapp.services.sentto.SentTo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by damian on 3/6/17.
@@ -19,6 +25,7 @@ import java.net.Socket;
 
 public class ClientHandler extends Thread{
     private Socket socket;
+    public static AddToList addToList;
     public ClientHandler(Socket socket){
         this.socket=socket;
         this.start();
@@ -63,10 +70,31 @@ public class ClientHandler extends Thread{
         try {
             SmsManager smsManager = SmsManager.getDefault();
             Log.d("ClientHandler","Sending message");
-            smsManager.sendTextMessage(jsonObject.get("phone").toString(), null, jsonObject.get("message").toString(), null, null);
+
+            //PendingIntent pendingIntent = PendingIntent.getBroadcast(this,444,new Intent(),PendingIntent.FLAG_UPDATE_CURRENT);
+            String msg=jsonObject.get("message").toString(),ph=jsonObject.get("phone").toString();
+            ArrayList<String> arrayList=smsManager.divideMessage(msg);
+
+
+
+
+
+            //destnuum, sc,arraylist of strings,sentIntents,receivedIntents
+
+
+
+            smsManager.sendMultipartTextMessage(ph,null,arrayList,null,null);
+
+            //calling add to list
+
+            addToList.addToList(new SentTo(msg,ph,new Date()));
+
+
             return "sent";
         }catch (JSONException jse){
             jse.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return "issue";
     }
