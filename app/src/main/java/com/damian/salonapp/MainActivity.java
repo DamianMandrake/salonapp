@@ -9,13 +9,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.damian.salonapp.services.networking.AddToList;
 import com.damian.salonapp.services.networking.ClientHandler;
 import com.damian.salonapp.services.networking.SetSomeText;
 import com.damian.salonapp.services.NetworkingService;
+import com.damian.salonapp.services.sentto.SentRecyclerAdapter;
 import com.damian.salonapp.services.sentto.SentTo;
 
 import java.util.ArrayList;
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements SetSomeText,AddTo
     public static String TEXT_VIEW_TXT="Type this ip address into your pc client";
 
     private ArrayList<SentTo> arrayList;
+    private RecyclerView recyclerView;
+    private SentRecyclerAdapter sentRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +42,17 @@ public class MainActivity extends AppCompatActivity implements SetSomeText,AddTo
 
         this.arrayList=new ArrayList<>();
         ipText=(TextView) findViewById(R.id.ip_text_view);
+
+        this.recyclerView=(RecyclerView)findViewById(R.id.msg_delivery);
+        this.sentRecyclerAdapter=new SentRecyclerAdapter(this.arrayList,this.getApplicationContext());
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        this.recyclerView.setLayoutManager(linearLayoutManager);
+        this.recyclerView.setAdapter(this.sentRecyclerAdapter);
+
         com.damian.salonapp.services.networking.DataSocket.ref=this;
         ClientHandler.addToList=this;
+
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)!= PackageManager.PERMISSION_DENIED){
             //starting the service
             this.launchService();
@@ -79,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements SetSomeText,AddTo
     @Override
     public void addToList(SentTo sentTo){
         arrayList.add(sentTo);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("changing data set");
+                MainActivity.this.sentRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
 

@@ -30,7 +30,7 @@ public class SentRecyclerAdapter extends RecyclerView.Adapter<SentRecyclerAdapte
 
     @Override
     public SentToViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SentToViewHolder(this.layoutInflater.inflate(R.layout.sent_to_recyler_item,parent));
+        return new SentToViewHolder(this.layoutInflater.inflate(R.layout.sent_to_recyler_item,parent,false));
     }
 
     @Override
