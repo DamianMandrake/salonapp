@@ -1,7 +1,6 @@
 package com.damian.salonapp;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SetSomeText,AddTo
     @Override
     public void setSomeText(final String text){
         /* since only ui thread is allowed to access ui elements*/
-        this.runOnUiThread(new Runnable() {
+        this.runSomethingOnUiThread(new Runnable() {
             @Override
             public void run() {
                 MainActivity.this.ipText.setText(text);
@@ -93,14 +92,18 @@ public class MainActivity extends AppCompatActivity implements SetSomeText,AddTo
     @Override
     public void addToList(SentTo sentTo){
         arrayList.add(sentTo);
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("changing data set");
-                MainActivity.this.sentRecyclerAdapter.notifyDataSetChanged();
-            }
-        });
+       this.runSomethingOnUiThread(new Runnable() {
+           @Override
+           public void run() {
+               System.out.println("changing data set");
+               MainActivity.this.sentRecyclerAdapter.notifyDataSetChanged();
+           }
+       });
 
+    }
+
+    private void runSomethingOnUiThread(Runnable runnable){
+        this.runOnUiThread(runnable);
     }
 
 
